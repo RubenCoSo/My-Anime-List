@@ -10,12 +10,12 @@ const userSchema = new Schema({
       ref: "Anime",
     },
   ],
-  // watchedEpisodes: [
-  //   {
-  //     type: Schema.Types.ObjectId,
-  //     ref: "Episode",
-  //   },
-  // ],
+  watchedEpisodes: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Episode",
+    },
+  ],
   //referencias de la bd characrters
 });
 

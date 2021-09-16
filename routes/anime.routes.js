@@ -2,6 +2,7 @@ const router = require("express").Router();
 const isLoggedIn = require("../middleware/isLoggedIn");
 const Anime = require("../models/Anime.model");
 const User = require("../models/User.model");
+const Episode = require("../models/Episode.model");
 const Api = require("../services/ApiHandler");
 const AnimeAPI = new Api();
 
@@ -71,20 +72,6 @@ router.post("/delete-favorite", isLoggedIn, (req, res) => {
     .catch((err) => console.log(err));
 });
 
-// router.post("/episodes", (req, res) => {
-//   const { id } = req.body;
-
-//   let offset = 0;
-
-//   AnimeAPI.getAnimeEpisodes(id, offset).then((episodes) => {
-//     res.render("anime/episodes", {
-//       episode: episodes.data.data,
-//       offset: 0,
-//       animeId: id,
-//     });
-//   });
-// });
-
 router.get("/episodes/:id/:offset", (req, res) => {
   let paginationNext = Number(req.params.offset);
   paginationNext += 10;
@@ -108,6 +95,44 @@ router.get("/episodes/:id/:offset", (req, res) => {
       isPrevious: isPrevious,
       isNext: isNext,
     });
+  });
+});
+
+router.post("/add-episode", (req, res) => {
+  // const episodeApiId = ({ episodeApiId } = req.body.episodeApiId);
+  const episode = req.body.sodeID;
+  const { episode2 } = req.body;
+  return console.log(req.body);
+
+  Episode.find(episodeApiId).then((episodeArray) => {
+    //comprobar si ese apiId ya esta en db Episodes
+    if (episodeArray.length === 0) {
+      Episode.create(episodeApiId)
+        .then((result) => {
+          User.findByIdAndUpdate(req.user._id, {
+            $push: { watchedEpisodes: result._id },
+          }).then(() => {
+            res.status(200);
+          });
+        })
+        .catch((err) => console.log(err));
+    } else {
+      User.findById(req.user._id)
+        .then((user) => {
+          if (!user.watchedEpisodes.includes(episodeArray[0]._id)) {
+            User.findByIdAndUpdate(req.user._id, {
+              $push: { watchedEpisodes: episodeArray[0]._id },
+            }).then(() => {
+              res.redirect("/animes");
+            });
+          } else {
+            res.redirect("/animes");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   });
 });
 

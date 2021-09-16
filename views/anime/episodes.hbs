@@ -1,44 +1,41 @@
-{{#each episode}}
-  <p>{{attributes.number}}---{{attributes.titles.en_jp}}</p>
-  <label>
-    {{#if ../isPaginationTrue}}
-      <input type="checkbox" id="seenEpisode" value="first_checkbox" checked />
-    {{else}}
-      <input type="checkbox" id="seenEpisode" value="first_checkbox" />
+<div id="episodesView">
+  <div>
+    <h1>Episodes</h1>
+  </div>
+  {{#each episode}}
+    <div id="episodes">
+      <div>
+        <p>{{attributes.number}}---{{attributes.titles.en_jp}}</p>
+      </div>
+      <label>
+        {{#if ../isPaginationTrue}}
+          <input type="checkbox" class="watchedEpisode" name="episodeApiId" value="{{id}}" checked />
+        {{else}}
+          <input type="checkbox" class="watchedEpisode" name="episodeApiId" value="{{id}}" />
+        {{/if}}
+
+        Watched</label>
+    </div>
+  {{/each}}
+  <div id="epButtons">
+
+    {{#if isPrevious}}
+      <form  action="/episodes/{{animeId}}/{{paginationPrevious}}" method="get">
+        <button class="previous" type="submit">Previous Page</button>
+      </form>
     {{/if}}
 
-    Watched</label><br />
-  <br />
-{{/each}}
-
-{{#if isNext}}
-  <form action="/episodes/{{animeId}}/{{paginationNext}}" method="get">
-    <button type="submit">Next Page</button>
-  </form>
-{{/if}} 
-
-{{#if isPrevious}}
-  <form action="/episodes/{{animeId}}/{{paginationPrevious}}" method="get">
-    <button type="submit">Previous Page</button>
-  </form>
-{{/if}}
+     {{#if isNext}}
+      <form  action="/episodes/{{animeId}}/{{paginationNext}}" method="get">
+        <button class="next" type="submit">Next Page</button>
+      </form>
+      
+    {{/if}} 
+  </div>
+</div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="../../public/js/episodesHandler.js"></script>
+<script src="/js/episodes-script.js"></script>
 
-{{!-- {{#if isPreviousTrue}}
-  <form action="/episodes/{{animeId}}/{{pagination}}" method="get">
-    <button type="submit">Next Page</button>
-  </form>
-  <form action="/episodes/previous/{{animeId}}/{{pagination}}" method="get">
-    <button type="submit">Previous Page</button>
-  </form>
-{{else}}
-  {{#if isNextTrue}}
-    <form action="/episodes/previous/{{animeId}}/{{pagination}}" method="get">
-      <button type="submit">Previous Page</button>
-    </form>
-{{else}}
-  <form action="/episodes/{{animeId}}/{{pagination}}" method="get">
-    <button type="submit">Next Page</button>
-  </form>
-{{/if}} --}}
