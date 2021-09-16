@@ -1,0 +1,39 @@
+<div id="profile" class="container"></div>
+  <div id="searchTitle">
+    <div class="search">
+      <form action="/anime-search" , method="GET">
+        <input
+          id="anime-input"
+          type="text"
+          name="anime"
+          placeholder="Search an anime..."
+        />
+        <button type="submit">Search</button>
+      </form>
+    </div>
+    <h1>Search results</h1>
+  </div>
+  <div id="cards">
+  <div class="row row row-cols-3 row-cols-sm-4 row-cols-md-5 g-6 my-6">
+    {{#each animes}}
+      <div class="col">
+        <div class="card shadow">
+          <img id="favoriteimg" src={{attributes.posterImage.medium}} alt= />
+          <div id="textBox">
+            <h4>{{attributes.titles.en_jp}}</h4>
+            <h6>{{attributes.titles.ja_jp}}</h6>
+            <h6><b>Score: </b>{{attributes.averageRating}}/100</h6>
+            
+            <div class="buttons">
+              <form action="/details" method="POST">
+                <input type="hidden" name="id" value={{id}} />
+                <button type="submit">Details</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+    </div>
+  </div>
+</div>

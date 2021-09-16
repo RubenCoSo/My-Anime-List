@@ -1,0 +1,32 @@
+<div id="profile" class="container"></div>
+  <div class="titles">
+    <h1>Welcome {{user.username}}</h1>
+    <br>
+    <h3>This are your favourites</h3>
+  </div>
+  <div id="cards">
+    <div class="row row row-cols-3 row-cols-sm-4 row-cols-md-5 g-6 my-6">
+      {{#each user.favorites}}
+        <div class="col">
+          <div class="card shadow">
+            <img id="favoriteimg" src={{image}} alt={{title}} />
+            <div id="textBox">
+              <h4>{{title}}</h4>
+              <h6>{{jpTitle}}</h6>
+              <h6><b>Score: </b>{{score}}/100</h6>
+              
+              <div class="buttons">
+                <button><a href="/episodes/{{apiId}}/0">Episodes</a></button>
+
+                <form action="/delete-favourite" method="POST">
+                  <input type="hidden" name="id" value={{_id}} />
+                  <button type="submit">Delete</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+</div>

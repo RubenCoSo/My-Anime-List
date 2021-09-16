@@ -1,0 +1,23 @@
+<div id="signup">
+  <img src="../../images/My Post.jpg" alt="" />
+  <form id="siForm" action="/auth/login" method="POST">
+    <div>
+      <label>
+
+        <input type="text" placeholder="Username" name="username" />
+      </label>
+    </div>
+    <div>
+      <label>
+
+        <input type="password" placeholder="Password" name="password" />
+      </label>
+    </div>
+
+    <button type="submit">Log in</button>
+  </form>
+
+  {{#if errorMessage}}
+    <p class="error">{{errorMessage}}</p>
+  {{/if}}
+</div>

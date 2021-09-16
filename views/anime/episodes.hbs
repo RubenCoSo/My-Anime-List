@@ -1,0 +1,13 @@
+{{#each episode}}
+  <p>{{attributes.number}}---{{attributes.titles.en_jp}}</p>
+  <label><input type="checkbox" id="seenEpisode" value="first_checkbox" />
+    Watched</label><br />
+  <br />
+{{/each}}
+
+<p>{{offset}}</p>
+<p>{{animeId}}</p>
+
+<form action="/next-page/{{offset}}" method="get">
+  <button type="submit">Next Page</button>
+</form>
