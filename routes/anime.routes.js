@@ -98,17 +98,23 @@ router.get("/episodes/:id/:offset", (req, res) => {
   });
 });
 
-router.post("/add-episode", (req, res) => {
-  // const episodeApiId = ({ episodeApiId } = req.body.episodeApiId);
-  const episode = req.body.sodeID;
-  const { episode2 } = req.body;
-  return console.log(req.body);
+router.post("/add-episode", isLoggedIn, (req, res) => {
+  // console.log(req.body);
+  const { episodeApiId, checked } = req.body;
+  const episodeId = req.body.episodeApiId;
+  // const { episodeApiId } = req.body;
+  // console.log({ episodeId });
 
-  Episode.find(episodeApiId).then((episodeArray) => {
-    //comprobar si ese apiId ya esta en db Episodes
+  Episode.find({ episodeApiId: episodeId }).then((episodeArray) => {
+    //comprobar si ese episodio ya esta en db Episodes
+    console.log(`.find cleared`);
     if (episodeArray.length === 0) {
-      Episode.create(episodeApiId)
+      Episode.create({ episodeApiId, checked })
         .then((result) => {
+          // console.log(
+          //   `episode with API id ${result.episodeApiId} and chcked state ${result.checked} created`
+          // );
+          // console.log(req.user._id);
           User.findByIdAndUpdate(req.user._id, {
             $push: { watchedEpisodes: result._id },
           }).then(() => {
@@ -123,10 +129,10 @@ router.post("/add-episode", (req, res) => {
             User.findByIdAndUpdate(req.user._id, {
               $push: { watchedEpisodes: episodeArray[0]._id },
             }).then(() => {
-              res.redirect("/animes");
+              res.status(200);
             });
           } else {
-            res.redirect("/animes");
+            res.res.status(200);
           }
         })
         .catch((err) => {
@@ -135,45 +141,5 @@ router.post("/add-episode", (req, res) => {
     }
   });
 });
-
-// router.get("/episodes/previous/:id/:offset", (req, res) => {
-//   let paginationPrevious = Number(req.params.offset);
-//   paginationPrevious -= 10;
-//   const animeId = req.params.id;
-//   let isPreviousTrue = paginationPrevious > 10 ? true : false;
-//   let isNextTrue = true;
-
-//   AnimeAPI.getAnimeEpisodes(animeId, req.params.offset).then((episodes) => {
-//     if (episodes.data.data.length < 10) {
-//       isNextTrue = false;
-//     }
-//     res.render("anime/episodes", {
-//       episode: episodes.data.data,
-//       paginationPrevious: paginationPrevious,
-//       animeId: animeId,
-//       isPreviousTrue: isPreviousTrue,
-//       isNextTrue: isNextTrue,
-//     });
-//   });
-// });
-
-// router.get("/episodes/id/:offset", (req, res) => {
-//   let pagination = Number(req.params.offset);
-//   pagination += 10;
-//   const animeId = req.params.id;
-
-//   AnimeAPI.getAnimeEpisodes(animeId, pagination).then((episodes) => {
-//     return res.render("anime/episodes", {
-//       episode: episodes.data.data,
-//       pagination: pagination,
-//     });
-//   });
-// });
-
-//  * ---arrays
-// { field: { $in: [ value1, value2, ..... , valueN ] } }
-// { field: { $nin: [ value1, value2, ..... , valueN ] } }
-// { field: { $all: [ value1, value2, ..... , valueN ] } }
-//  */
 
 module.exports = router;

@@ -4,12 +4,11 @@ const { Schema, model } = require("mongoose");
 const episodeSchema = new Schema(
   {
     episodeApiId: String,
+    checked: Boolean,
   },
   {
     timestamps: true,
   }
 );
 
-const Episode = model("Episode", episodeSchema);
-
-module.exports = Episode;
+module.exports = model("Episode", episodeSchema);
