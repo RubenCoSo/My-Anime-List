@@ -86,17 +86,64 @@ router.post("/delete-favorite", isLoggedIn, (req, res) => {
 // });
 
 router.get("/episodes/:id/:offset", (req, res) => {
-  let pagination = Number(req.params.offset);
-  pagination += 10;
+  let paginationNext = Number(req.params.offset);
+  paginationNext += 10;
+
+  let paginationPrevious = Number(req.params.offset);
+  paginationPrevious -= 10;
+
   const animeId = req.params.id;
+  let isPrevious = paginationNext > 10 ? true : false;
+  let isNext = true;
 
   AnimeAPI.getAnimeEpisodes(animeId, req.params.offset).then((episodes) => {
-    return res.render("anime/episodes", {
+    if (episodes.data.data.length < 10) {
+      isNext = false;
+    }
+    res.render("anime/episodes", {
       episode: episodes.data.data,
-      pagination: pagination,
+      paginationNext: paginationNext,
+      paginationPrevious: paginationPrevious,
+      animeId: animeId,
+      isPrevious: isPrevious,
+      isNext: isNext,
     });
   });
 });
+
+// router.get("/episodes/previous/:id/:offset", (req, res) => {
+//   let paginationPrevious = Number(req.params.offset);
+//   paginationPrevious -= 10;
+//   const animeId = req.params.id;
+//   let isPreviousTrue = paginationPrevious > 10 ? true : false;
+//   let isNextTrue = true;
+
+//   AnimeAPI.getAnimeEpisodes(animeId, req.params.offset).then((episodes) => {
+//     if (episodes.data.data.length < 10) {
+//       isNextTrue = false;
+//     }
+//     res.render("anime/episodes", {
+//       episode: episodes.data.data,
+//       paginationPrevious: paginationPrevious,
+//       animeId: animeId,
+//       isPreviousTrue: isPreviousTrue,
+//       isNextTrue: isNextTrue,
+//     });
+//   });
+// });
+
+// router.get("/episodes/id/:offset", (req, res) => {
+//   let pagination = Number(req.params.offset);
+//   pagination += 10;
+//   const animeId = req.params.id;
+
+//   AnimeAPI.getAnimeEpisodes(animeId, pagination).then((episodes) => {
+//     return res.render("anime/episodes", {
+//       episode: episodes.data.data,
+//       pagination: pagination,
+//     });
+//   });
+// });
 
 //  * ---arrays
 // { field: { $in: [ value1, value2, ..... , valueN ] } }

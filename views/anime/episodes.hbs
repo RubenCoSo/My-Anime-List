@@ -1,13 +1,44 @@
 {{#each episode}}
   <p>{{attributes.number}}---{{attributes.titles.en_jp}}</p>
-  <label><input type="checkbox" id="seenEpisode" value="first_checkbox" />
+  <label>
+    {{#if ../isPaginationTrue}}
+      <input type="checkbox" id="seenEpisode" value="first_checkbox" checked />
+    {{else}}
+      <input type="checkbox" id="seenEpisode" value="first_checkbox" />
+    {{/if}}
+
     Watched</label><br />
   <br />
 {{/each}}
 
-<p>{{offset}}</p>
-<p>{{animeId}}</p>
+{{#if isNext}}
+  <form action="/episodes/{{animeId}}/{{paginationNext}}" method="get">
+    <button type="submit">Next Page</button>
+  </form>
+{{/if}} 
 
-<form action="/next-page/{{offset}}" method="get">
-  <button type="submit">Next Page</button>
-</form>
+{{#if isPrevious}}
+  <form action="/episodes/{{animeId}}/{{paginationPrevious}}" method="get">
+    <button type="submit">Previous Page</button>
+  </form>
+{{/if}}
+
+
+
+{{!-- {{#if isPreviousTrue}}
+  <form action="/episodes/{{animeId}}/{{pagination}}" method="get">
+    <button type="submit">Next Page</button>
+  </form>
+  <form action="/episodes/previous/{{animeId}}/{{pagination}}" method="get">
+    <button type="submit">Previous Page</button>
+  </form>
+{{else}}
+  {{#if isNextTrue}}
+    <form action="/episodes/previous/{{animeId}}/{{pagination}}" method="get">
+      <button type="submit">Previous Page</button>
+    </form>
+{{else}}
+  <form action="/episodes/{{animeId}}/{{pagination}}" method="get">
+    <button type="submit">Next Page</button>
+  </form>
+{{/if}} --}}
