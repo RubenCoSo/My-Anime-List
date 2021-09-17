@@ -1,45 +1,100 @@
 <div id="episodesView">
-  <div>
-    <h1>Episodes</h1>
+
+  <div id="already">
+
+    <div>
+      <h3>Watched Episodes</h3>
+    </div>
+
+    {{#each user}}
+      <div class="episode">
+        <div>
+          <p>{{episodeNumber}}.{{episodeTitle}}</p>
+        </div>
+        {{! <div>
+                    <label>
+                      <input
+                        type="hidden"
+                        class="markEpisode"
+                        name="episodeApiId"
+                        value=""
+                        checked
+                      />
+                      Watched</label>
+                  </div> }}
+      </div>
+    {{/each}}
+
   </div>
 
-  <p>{{user.watchedEpisodes.episdodeApiId}}</p>
-  <p>{{user.watchedEpisodes.checked}}</p>
-
-  {{#each episode}}
-    <div id="episodes">
-      <div>
-        <p>{{attributes.number}}---{{attributes.titles.en_jp}}</p>
-      </div>
-      <label>
-        {{#if ../isPaginationTrue}}
-          <input type="checkbox" class="watchedEpisode" name="episodeApiId" value="{{id}}" checked />
-        {{else}}
-          <input type="checkbox" class="watchedEpisode" name="episodeApiId" value="{{id}}" />
-        {{/if}}
-
-        Watched</label>
+  <div id="still">
+    <div>
+      <h3>Episodes to see</h3>
     </div>
-  {{/each}}
-  <div id="epButtons">
+    {{#each episode}}
+      <div class="episode">
+        <div>
+          <p>{{attributes.number}}.{{attributes.titles.en_jp}}</p>
+        </div>
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              class="watchedEpisode"
+              name="episodex"
+              value=""
+            />
+            <input
+              type="hidden"
+              class="watchedEpisodes"
+              name="episodeApiId"
+              value="{{id}}"
+            />
+            <input
+              type="hidden"
+              class="watchedEpisodes"
+              name="episodeNumber"
+              value="{{attributes.number}}"
+            />
+            <input
+              type="hidden"
+              class="watchedEpisodes"
+              name="episodeTitle"
+              value="{{attributes.titles.en_jp}}"
+            />
+            <input
+              type="hidden"
+              class="watchedEpisodes"
+              name="animeApiId"
+              value="{{../animeId}}"
+            />
 
-    {{#if isPrevious}}
-      <form  action="/episodes/{{animeId}}/{{paginationPrevious}}" method="get">
-        <button class="previous" type="submit">Previous Page</button>
-      </form>
-    {{/if}}
+            Watched</label>
+        </div>
+      </div>
+    {{/each}}
 
-     {{#if isNext}}
-      <form  action="/episodes/{{animeId}}/{{paginationNext}}" method="get">
-        <button class="next" type="submit">Next Page</button>
-      </form>
-      
-    {{/if}} 
+    <div id="epButtons">
+
+      {{#if isPrevious}}
+        <form
+          action="/episodes/{{animeId}}/{{paginationPrevious}}"
+          method="get"
+        >
+          <button class="previous" type="submit">Previous Page</button>
+        </form>
+      {{/if}}
+
+      {{#if isNext}}
+        <form action="/episodes/{{animeId}}/{{paginationNext}}" method="get">
+          <button class="next" type="submit">Next Page</button>
+        </form>
+
+      {{/if}}
+    </div>
   </div>
 </div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="../../public/js/episodesHandler.js"></script>
 <script src="/js/episodes-script.js"></script>
-

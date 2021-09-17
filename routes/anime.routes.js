@@ -83,41 +83,77 @@ router.get("/episodes/:id/:offset", isLoggedIn, (req, res) => {
   let isPrevious = paginationNext > 10 ? true : false;
   let isNext = true;
 
-  User.findById(req.user._id)
-    .populate("watchedEpisodes")
-    .then((user) => user)
-    .then((user) => {
-      console.log(user);
-      return AnimeAPI.getAnimeEpisodes(animeId, req.params.offset);
-    })
-    .then((episodes) => {
-      if (episodes.data.data.length < 10) {
-        isNext = false;
-      }
-      res.render("anime/episodes", {
-        episode: episodes.data.data,
-        paginationNext: paginationNext,
-        paginationPrevious: paginationPrevious,
-        animeId: animeId,
-        isPrevious: isPrevious,
-        isNext: isNext,
-        user,
+  const user = User.findById(req.user._id).populate("watchedEpisodes");
+
+  const episodes = AnimeAPI.getAnimeEpisodes(animeId, req.params.offset);
+
+  Promise.all([user, episodes]).then(([user, episodes]) => {
+    if (episodes.data.data.length < 10) {
+      isNext = false;
+    }
+    let episodesToView = [];
+    let epiWatforId = [];
+
+    if (!user.watchedEpisodes.length) {
+      episodesToView = episodes.data.data;
+    } else {
+      user.watchedEpisodes.forEach((watched) => {
+        if (!episodesToView.length) {
+          episodesToView = episodes.data.data.filter(
+            (episode) => episode.id !== watched.episodeApiId
+          );
+        } else {
+          episodesToView = episodesToView.filter(
+            (episode) => episode.id !== watched.episodeApiId
+          );
+        }
+        // console.log(episodesToView);
       });
+    }
+
+    epiWatforId = user.watchedEpisodes.filter(
+      (episode) => episode.animeApiId === animeId
+    );
+
+    console.log(epiWatforId);
+
+    // res.send({ epiWatforId, user });
+    // return;
+
+    res.render("anime/episodes", {
+      user: epiWatforId,
+      episode: episodesToView,
+      paginationNext: paginationNext,
+      paginationPrevious: paginationPrevious,
+      animeId: animeId,
+      isPrevious: isPrevious,
+      isNext: isNext,
     });
+    // res.send({
+    //   user,
+    //   episode: episodesToView,
+    // paginationNext: paginationNext,
+    // paginationPrevious: paginationPrevious,
+    // animeId: animeId,
+    // isPrevious: isPrevious,
+    // isNext: isNext,
+    // });
+  });
 });
 
+//
 router.post("/add-episode", isLoggedIn, (req, res) => {
   // console.log(req.body);
-  const { episodeApiId, checked } = req.body;
+  const { animeApiId, episodeApiId, episodeNumber, episodeTitle } = req.body;
   const episodeId = req.body.episodeApiId;
   // const { episodeApiId } = req.body;
-  // console.log({ episodeId });
+  console.log(req.body);
 
   Episode.find({ episodeApiId: episodeId }).then((episodeArray) => {
     //comprobar si ese episodio ya esta en db Episodes
     console.log(`.find cleared`);
     if (episodeArray.length === 0) {
-      Episode.create({ episodeApiId, checked })
+      Episode.create({ animeApiId, episodeApiId, episodeNumber, episodeTitle })
         .then((result) => {
           // console.log(
           //   `episode with API id ${result.episodeApiId} and chcked state ${result.checked} created`
