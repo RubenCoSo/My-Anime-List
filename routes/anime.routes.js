@@ -72,7 +72,7 @@ router.post("/delete-favorite", isLoggedIn, (req, res) => {
     .catch((err) => console.log(err));
 });
 
-router.get("/episodes/:id/:offset", (req, res) => {
+router.get("/episodes/:id/:offset", isLoggedIn, (req, res) => {
   let paginationNext = Number(req.params.offset);
   paginationNext += 10;
 
@@ -83,19 +83,27 @@ router.get("/episodes/:id/:offset", (req, res) => {
   let isPrevious = paginationNext > 10 ? true : false;
   let isNext = true;
 
-  AnimeAPI.getAnimeEpisodes(animeId, req.params.offset).then((episodes) => {
-    if (episodes.data.data.length < 10) {
-      isNext = false;
-    }
-    res.render("anime/episodes", {
-      episode: episodes.data.data,
-      paginationNext: paginationNext,
-      paginationPrevious: paginationPrevious,
-      animeId: animeId,
-      isPrevious: isPrevious,
-      isNext: isNext,
+  User.findById(req.user._id)
+    .populate("watchedEpisodes")
+    .then((user) => user)
+    .then((user) => {
+      console.log(user);
+      return AnimeAPI.getAnimeEpisodes(animeId, req.params.offset);
+    })
+    .then((episodes) => {
+      if (episodes.data.data.length < 10) {
+        isNext = false;
+      }
+      res.render("anime/episodes", {
+        episode: episodes.data.data,
+        paginationNext: paginationNext,
+        paginationPrevious: paginationPrevious,
+        animeId: animeId,
+        isPrevious: isPrevious,
+        isNext: isNext,
+        user,
+      });
     });
-  });
 });
 
 router.post("/add-episode", isLoggedIn, (req, res) => {
